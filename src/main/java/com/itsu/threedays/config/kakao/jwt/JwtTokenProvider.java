@@ -1,5 +1,6 @@
-package com.itsu.threedays.config.jwt;
+package com.itsu.threedays.config.kakao.jwt;
 
+import com.itsu.threedays.entity.UserEntity;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,46 +14,57 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
+    private final Long accessTokenValid = 60 * 60 * 24 * 1000L; // 24 hour
+    private final Long refreshTokenValid = 14 * 24 * 60 * 60 * 1000L; // 14 day
+
     @Value("${jwt.secret}")
     private String secret;
 
     @PostConstruct
-    private void init() {
+    public void init() {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(Authentication authentication){
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 86400);
-//        Claims claims = Jwts.claims().setSubject(String.valueOf(authentication.getPrincipal()));
-//        claims.put("role",authentication.getAuthorities());
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public void setSecret(String secret){
+        this.secret = secret;
+    }
 
+    public String generateToken(UserEntity user, Long tokenValid){
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + tokenValid);
+//        Claims claims = Jwts.claims().setSubject(String.valueOf(authentication.getPrincipal()));
+//        String authorities = authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth",authorities)
+                .setSubject(user.getNickname())
+//                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
+                .claim("email",user.getEmail())
                 .signWith(SignatureAlgorithm.HS256,secret)
                 .compact();
     }
-    //토큰넘버, 만료인증시간(24시간정도),,
+    public  String generateAccessToken(UserEntity user){
+        return generateToken(user,accessTokenValid);
+    }
+
+    public  String generateRefreshToken(UserEntity user){
+        return generateToken(user,refreshTokenValid);
+    }
+
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+
             //토큰의 만료 시간이 현재 시간 이전인지를 확인 -> 만료 시간이 현재 시간 이전이라면 유효하지 않은 토큰으로 판단
             if (claims.getBody().getExpiration().before(new Date())) {
                 return false;
@@ -72,26 +84,11 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        //클레임에서 권한 정보 가져오기
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
         //User 객체를 만들어서 Authentication 리턴
-        User principal = new User(claims.getSubject(), "",authorities);
+        User principal = new User(claims.get("email",String.class), "",authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-    }
-    public String resolveToken(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
-        log.info("bearerToken: {}",bearerToken);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) { //authorization이 Bearer 인지 확인
-
-            log.info("bearerToken.substring(7) :{}",bearerToken.substring(7));
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 }
