@@ -1,7 +1,7 @@
 package com.itsu.threedays.controller;
 
-import com.itsu.threedays.config.kakao.KakaoUserInfoDto;
-import com.itsu.threedays.config.kakao.jwt.JwtTokenProvider;
+import com.itsu.threedays.dto.KakaoUserInfoDto;
+import com.itsu.threedays.config.jwt.JwtTokenProvider;
 import com.itsu.threedays.dto.TokenDto;
 import com.itsu.threedays.dto.UserDto;
 import com.itsu.threedays.entity.UserEntity;
