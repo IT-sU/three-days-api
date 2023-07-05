@@ -1,4 +1,4 @@
-package com.itsu.threedays.config.kakao.jwt;
+package com.itsu.threedays.config.jwt;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

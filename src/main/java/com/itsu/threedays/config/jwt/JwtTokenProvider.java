@@ -1,4 +1,4 @@
-package com.itsu.threedays.config.kakao.jwt;
+package com.itsu.threedays.config.jwt;
 
 import com.itsu.threedays.entity.UserEntity;
 import io.jsonwebtoken.*;

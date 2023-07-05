@@ -1,4 +1,4 @@
-package com.itsu.threedays.config.kakao;
+package com.itsu.threedays.dto;
 
 import com.itsu.threedays.dto.TokenDto;
 import lombok.AllArgsConstructor;
