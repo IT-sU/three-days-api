@@ -1,4 +1,4 @@
-package com.itsu.threedays.config.jwt;
+package com.itsu.threedays.config.kakao.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,30 +21,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         //Request Header에서 토큰 추출
-        String jwt = jwtTokenProvider.resolveToken(request);
+        String token = resolveToken(request);
         log.info("jwt filter!");
-        log.info("jwt: {}",jwt);
 
         //Token 유효성 검사
-        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)){
+        if (jwtTokenProvider.validateToken(token)){
 
             //토큰 인증받은 유저인 UsernamePasswordAuthenticiationToken을 리턴
-            Authentication auth = jwtTokenProvider.getAuthentication(jwt);
+            Authentication auth = jwtTokenProvider.getAuthentication(token);
             log.info("authentication!");
 
             SecurityContextHolder.getContext().setAuthentication(auth); //토큰이 유효한 유저임 -> SecurityContext에 저장
         }
 
-
         filterChain.doFilter(request,response);
     }
 
-//    private String resolveToken(HttpServletRequest request){
-//        String bearerToken = request.getHeader("authorization");
-//        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
+    private String resolveToken(HttpServletRequest request){
+        String bearerToken = request.getHeader("authorization");
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 }

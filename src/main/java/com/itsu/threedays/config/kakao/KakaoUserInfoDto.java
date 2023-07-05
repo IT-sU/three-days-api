@@ -1,5 +1,6 @@
-package com.itsu.threedays.domain.user.dto;
+package com.itsu.threedays.config.kakao;
 
+import com.itsu.threedays.dto.TokenDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    Long id;
-    String nickname;
+public class KakaoUserInfoDto {
     String email;
-    String kakaoAccessToken;
-    //String firebaseToken;
+    String nickname;
+    TokenDto tokenDto;
 
 }
