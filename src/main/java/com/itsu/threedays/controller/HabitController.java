@@ -1,6 +1,7 @@
 package com.itsu.threedays.controller;
 
 import com.itsu.threedays.dto.HabitDto;
+import com.itsu.threedays.dto.HabitEditResponseDto;
 import com.itsu.threedays.dto.HabitResponseDto;
 import com.itsu.threedays.dto.HabitUpdateRequestDto;
 import com.itsu.threedays.entity.HabitEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,6 +79,29 @@ public class HabitController {
         return ResponseEntity.ok(habitResponseDtos);
     }
 
+    @GetMapping("habits/edit-list") //편집시 습관목록조회(중지일 포함)
+    ResponseEntity<List<HabitEditResponseDto>> getHabitEditList(@RequestParam("email") String email) throws Exception{
+        List<HabitEntity> habits = habitService.findUndeletedAndAllHabits(email);
+        log.info("undeletedAndAllHabits: {}",habits);
+        List<HabitEditResponseDto> habitEditListDto = habits.stream()
+                .map(habitEntity -> {
+                    HabitEditResponseDto editResponseDto = new HabitEditResponseDto();
+                    editResponseDto.setId(habitEntity.getId());
+                    editResponseDto.setTitle(habitEntity.getTitle());
+                    editResponseDto.setDuration(habitEntity.getDuration());
+                    editResponseDto.setVisible(habitEntity.isVisible());
+                    editResponseDto.setComboCount(habitEntity.getComboCount());
+                    editResponseDto.setAchievementRate(habitEntity.getAchievementRate());
+                    editResponseDto.setAchievementCount(habitEntity.getAchievementCount());
+                    editResponseDto.setStopDate(habitEntity.getStopDate()); //중지일
+                    return editResponseDto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(habitEditListDto)
+    }
+
+
+
     @PutMapping("habits/{habitId}/edit") //습관수정(이름, 기간, 공개여부)
     ResponseEntity<HabitResponseDto> updateHabit(@PathVariable("habitId") Long habitId,
                                       @RequestBody HabitUpdateRequestDto habitUpdateDto) throws Exception {
@@ -90,16 +115,31 @@ public class HabitController {
     ResponseEntity<?> deleteHabit(@PathVariable("habitId") Long habitId){
         habitService.deleteHabit(habitId);
 
-        return ResponseEntity.ok("습관이 성공적으로 삭제되었습니다.");
+        return ResponseEntity.ok("Habit deleted successfully.");
 
     }
 
-    //습관 그만두기
+    @PutMapping("habits/{habitId}/stop") //습관 중지
+    ResponseEntity<String> stopHabit(@PathVariable("habitId") Long habitId){
+        try {
+            habitService.stopHabit(habitId);
+            return ResponseEntity.ok("Habit stopped successfully.");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Habit not found.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+
+    }
+
     //습관 편집시 목록
 
+
     @GetMapping("habits/{habitId}/reset") //매주마다 달성횟수 리셋
-    ResponseEntity<?> resetAcievement(@PathVariable("habitId") Long habitId){
+    ResponseEntity<String> resetAchievement(@PathVariable("habitId") Long habitId){
         habitService.resetAchievement(habitId);
-        return ResponseEntity.ok("달성횟수가 성공적으로 리셋되었습니다.");
+        return ResponseEntity.ok("Resetting the achievement count was successful.");
     }
 }

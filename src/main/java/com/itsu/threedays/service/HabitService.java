@@ -36,8 +36,20 @@ public class HabitService {
         Optional<UserEntity> byEmail = userRepository.findByEmail(email);
         if(byEmail.isPresent()){
             UserEntity user = byEmail.get();
-            log.info("email로 user 찾기:{}",user);
+            log.info("email로 user 찾기:{}",user.getEmail());
             return habitRepository.findAllByUserIdAndDeleteYnAndStopDateIsNull(user,false);
+        }
+        else {
+            throw new Exception("User NOT FOUND!");
+        }
+    }
+
+    public List<HabitEntity> findUndeletedAndAllHabits(String email) throws Exception{ //삭제여부 false 전부(중지일 상관없이 = 그만두기 포함)
+        Optional<UserEntity> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent()){
+            UserEntity user = byEmail.get();
+            log.info("email로 user 찾기:{}",user.getEmail());
+            return habitRepository.findAllByUserIdAndDeleteYn(false);
         }
         else {
             throw new Exception("User NOT FOUND!");
@@ -82,8 +94,10 @@ public class HabitService {
         Optional<HabitEntity> byUserId = habitRepository.findById(habitId);
         if(byUserId.isPresent()){
             HabitEntity habit = byUserId.get();
-            habit.setDeleteYn(true);
-            habit.setLastModifiedDate(LocalDateTime.now());
+            log.info("습관ID로 습관찾기: 습관명 - {}",habit.getTitle());
+
+            habit.setDeleteYn(true); //삭제여부 true로 변경
+            habit.setLastModifiedDate(LocalDateTime.now()); //수정일 현재날짜로 변경
             habitRepository.save(habit);
         } else {
             throw new NotFoundException("Habit not found with id: " + habitId);
@@ -123,7 +137,29 @@ public class HabitService {
             habit.setComboCount(newComboCount); //콤보횟수 +1
         }
 
+        habitRepository.save(habit);
+
     }
+
+    public void stopHabit(Long habitId){
+        Optional<HabitEntity> optionalHabit = habitRepository.findById(habitId);
+        if(optionalHabit.isPresent()){
+            HabitEntity habit = optionalHabit.get();
+
+            if(habit.getStopDate() == null){ //중지일이 null 이면
+                habit.setStopDate(LocalDateTime.now()); //중지일을 현재 날짜로 설정
+                habitRepository.save(habit);
+            }
+            else {
+                throw new IllegalStateException("Habit is already stopped.");
+            }
+
+        } else {
+            throw new NotFoundException("Habit not found with id: " + habitId);
+        }
+    }
+
+
     public void resetAchievement(Long habitId) {
         //습관ID로 해당습관 찾기
         HabitEntity habit = habitRepository.findById(habitId)
@@ -145,7 +181,8 @@ public class HabitService {
                 habit.setAchievementCount(0); //달성횟수 초기화
             }
         }
-
     }
+
+
 
 }
