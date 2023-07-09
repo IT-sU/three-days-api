@@ -1,4 +1,4 @@
-package com.itsu.threedays.domain.user.entity.role;
+package com.itsu.threedays.entity.role;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

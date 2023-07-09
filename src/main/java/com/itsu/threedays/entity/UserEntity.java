@@ -1,6 +1,6 @@
-package com.itsu.threedays.domain.user.entity;
+package com.itsu.threedays.entity;
 
-import com.itsu.threedays.domain.user.entity.role.Role;
+import com.itsu.threedays.entity.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +13,8 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Data
+@Table(name = "USER_ENTITY")
+
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,5 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @Enumerated(EnumType.STRING)
-//    private OauthProvider oauthProvider;
 
 }

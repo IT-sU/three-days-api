@@ -1,4 +1,4 @@
-package com.itsu.threedays.domain.user.dto;
+package com.itsu.threedays.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +15,6 @@ public class UserDto {
     String email;
     String kakaoAccessToken;
     //String firebaseToken;
+    //TokenDto tokenDto;
 
 }
