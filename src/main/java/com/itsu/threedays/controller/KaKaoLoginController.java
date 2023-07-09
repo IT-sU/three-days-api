@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api")
@@ -109,20 +111,19 @@ public class KaKaoLoginController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-//    @GetMapping("/test")
-//    public ResponseEntity<String> testApi(HttpServletRequest request) {
-//        log.info("!!");
-//        String jwt = tokenProvider.resolveToken(request);
-//        log.info("testApi - jwt: {}",jwt);
-//        if (jwt == null) {
-//            return new ResponseEntity<>("JWT not found!", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        if (tokenProvider.validateToken(jwt)) {
-//            return new ResponseEntity<>("JWT is valid", HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>("JWT is invalid", HttpStatus.UNAUTHORIZED);
-//        }
-//    }
+    @GetMapping("/test")
+    public ResponseEntity<String> testApi(HttpServletRequest request) {
+        String jwt = tokenProvider.resolveToken(request);
+        log.info("testApi - jwt: {}",jwt);
+        if (jwt == null) {
+            return new ResponseEntity<>("JWT not found!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (tokenProvider.validateToken(jwt)) {
+            return new ResponseEntity<>("JWT is valid", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("JWT is invalid", HttpStatus.UNAUTHORIZED);
+        }
+    }
 
 }

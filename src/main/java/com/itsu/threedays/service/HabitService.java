@@ -49,7 +49,7 @@ public class HabitService {
         if (byEmail.isPresent()){
             UserEntity user = byEmail.get();
             log.info("email로 user 찾기:{}",user.getEmail());
-            return habitRepository.findAllByUserIdAndDeleteYn(false);
+            return habitRepository.findAllByDeleteYn(false);
         }
         else {
             throw new Exception("User NOT FOUND!");
@@ -73,13 +73,14 @@ public class HabitService {
             HabitEntity updatedHabit = habitRepository.save(habit);
 
             HabitResponseDto habitResponseDto = new HabitResponseDto();
-            habitResponseDto.setId(updatedHabit.getId());
-            habitResponseDto.setTitle(updatedHabit.getTitle());
-            habitResponseDto.setDuration(updatedHabit.getDuration());
-            habitResponseDto.setVisible(updatedHabit.isVisible());
-            habitResponseDto.setComboCount(updatedHabit.getComboCount());
-            habitResponseDto.setAchievementRate(updatedHabit.getAchievementRate());
-            habitResponseDto.setAchievementCount(updatedHabit.getAchievementCount());
+//            habitResponseDto.setId(updatedHabit.getId());
+//            habitResponseDto.setTitle(updatedHabit.getTitle());
+//            habitResponseDto.setDuration(updatedHabit.getDuration());
+//            habitResponseDto.setVisible(updatedHabit.isVisible());
+//            habitResponseDto.setComboCount(updatedHabit.getComboCount());
+//            habitResponseDto.setAchievementRate(updatedHabit.getAchievementRate());
+//            habitResponseDto.setAchievementCount(updatedHabit.getAchievementCount());
+            setCommonHabitFields(habitResponseDto,updatedHabit);
 
             return habitResponseDto;
 
@@ -119,22 +120,27 @@ public class HabitService {
 
         int newAchievementCount = habit.getAchievementCount() + 1;
         habit.setAchievementCount(newAchievementCount); //달성횟수 +1
+        log.info("달성횟수: {}", newAchievementCount);
 
         int newTotalAchievementCount = habit.getTotalAchievementCount() + 1;
         habit.setTotalAchievementCount(newTotalAchievementCount); //누적달성횟수 +1
+        log.info("누적달성횟수: {}",newTotalAchievementCount);
 
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(); //
         LocalDate habitCreate = habit.getCreatedDate().toLocalDate();
         long daysBetween = ChronoUnit.DAYS.between(now, habitCreate);
         int weeks = (int) (daysBetween / 7) + 1;
+        log.info("현재주차: {}",weeks);
 
-        int newAchievementRate = (newAchievementCount / habit.getDuration() * weeks) * 100;
+        double i = ((double) newTotalAchievementCount / habit.getDuration() * weeks) * 100;
+        int newAchievementRate = (int) Math.round(i);
+        log.info("달성률: {}",newAchievementRate);
         habit.setAchievementRate(newAchievementRate); //달성률 증가
-
 
         if(habit.getDuration() == newAchievementCount) {
             int newComboCount = habit.getComboCount() + 1;
             habit.setComboCount(newComboCount); //콤보횟수 +1
+            log.info("콤보횟수: {}",newComboCount);
         }
 
         habitRepository.save(habit);
@@ -181,6 +187,15 @@ public class HabitService {
                 habit.setAchievementCount(0); //달성횟수 초기화
             }
         }
+    }
+
+    public void setCommonHabitFields(HabitResponseDto habitDto, HabitEntity habitEntity ){
+        habitDto.setId(habitEntity.getId());
+        habitDto.setTitle(habitEntity.getTitle());
+        habitDto.setDuration(habitEntity.getDuration());
+        habitDto.setVisible(habitEntity.isVisible());
+        habitDto.setAchievementRate(habitEntity.getAchievementRate());
+        habitDto.setAchievementCount(habitEntity.getAchievementCount());
     }
 
 

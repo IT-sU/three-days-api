@@ -8,16 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HabitEditResponseDto {
-    Long id;
-    String title;
-    int duration;
-    boolean visible;
-    int comboCount;
-    int achievementRate;
-    int achievementCount;
+public class HabitEditResponseDto extends HabitResponseDto{
     LocalDateTime stopDate;
 }
