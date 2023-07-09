@@ -12,6 +12,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 #  profiles:
 #    active: test
 cloud:
@@ -27,3 +30,6 @@ cloud:
       secretKey: xg5Dd9CsSP4MJ39ZKpOiR2y+7Q/H0Xr1cIixEQ8d
 jwt:
   secret: threedaysapitokensecretkey123149398230
+jasypt:
+  encryptor:
+    password: hcjweg3120

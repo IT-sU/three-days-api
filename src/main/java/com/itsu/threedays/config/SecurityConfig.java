@@ -21,7 +21,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests().mvcMatchers("/api/login").permitAll()
-                .mvcMatchers("/api/**").hasRole("USER")
+                .mvcMatchers("/api/**").permitAll()
+                .mvcMatchers("/swagger-ui/**").permitAll()
+                .mvcMatchers("/swagger-resources/**").permitAll()
+                .mvcMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
