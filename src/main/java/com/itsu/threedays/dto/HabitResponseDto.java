@@ -19,4 +19,7 @@ public class HabitResponseDto {
     int comboCount;
     int achievementRate;
     int achievementCount;
+
+    //추가할 것
+
 }

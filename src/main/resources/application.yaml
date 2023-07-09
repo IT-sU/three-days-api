@@ -1,18 +1,29 @@
-#spring:
-#  datasource:
-#    url: jdbc:mysql://threedays.cnaor4agdclw.ap-northeast-2.rds.amazonaws.com :3306/threedays
-#    username: root
-#    password: threedays
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#  jpa:
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: create
-#    database: mysql
-#    properties:
-#      hibernate:
-#        format_sql: true
-##  profiles:
-##    active: test
-#jwt:
-#  secret: threedaysapitokensecretkey123149398230
+spring:
+  datasource:
+    url: jdbc:mysql://threedays.cnaor4agdclw.ap-northeast-2.rds.amazonaws.com :3306/threedays
+    username: root
+    password: threedays
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    database: mysql
+    properties:
+      hibernate:
+        format_sql: true
+#  profiles:
+#    active: test
+cloud:
+  aws:
+    s3:
+      bucket: itsubucket
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: AKIARREOKLWWNCOBGJHR
+      secretKey: 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
+jwt:
+  secret: threedaysapitokensecretkey123149398230
