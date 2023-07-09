@@ -13,7 +13,7 @@ public interface HabitRepository extends JpaRepository<HabitEntity,Long> {
     List<HabitEntity> findAllByUserId(UserEntity userId);
     List<HabitEntity> findAllByUserIdAndDeleteYnAndStopDateIsNull(UserEntity userId, boolean deleteYn);
 
-    List<HabitEntity> findAllByUserIdAndDeleteYn(boolean deleteYn);
+    List<HabitEntity> findAllByDeleteYn(boolean deleteYn);
 
     Optional<HabitEntity> findById(Long habitId);
 

@@ -69,6 +69,7 @@ public class HabitController {
                     HabitResponseDto responseDto = new HabitResponseDto();
                     responseDto.setId(habit.getId());
                     responseDto.setTitle(habit.getTitle());
+                    responseDto.setDuration(habit.getDuration());
                     responseDto.setVisible(habit.isVisible());
                     responseDto.setComboCount(habit.getComboCount());
                     responseDto.setAchievementRate(habit.getAchievementRate());
@@ -78,28 +79,6 @@ public class HabitController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(habitResponseDtos);
     }
-
-    @GetMapping("habits/edit-list") //편집시 습관목록조회(중지일 포함)
-    ResponseEntity<List<HabitEditResponseDto>> getHabitEditList(@RequestParam("email") String email) throws Exception{
-        List<HabitEntity> habits = habitService.findUndeletedAndAllHabits(email);
-        log.info("undeletedAndAllHabits: {}",habits);
-        List<HabitEditResponseDto> habitEditListDto = habits.stream()
-                .map(habitEntity -> {
-                    HabitEditResponseDto editResponseDto = new HabitEditResponseDto();
-                    editResponseDto.setId(habitEntity.getId());
-                    editResponseDto.setTitle(habitEntity.getTitle());
-                    editResponseDto.setDuration(habitEntity.getDuration());
-                    editResponseDto.setVisible(habitEntity.isVisible());
-                    editResponseDto.setComboCount(habitEntity.getComboCount());
-                    editResponseDto.setAchievementRate(habitEntity.getAchievementRate());
-                    editResponseDto.setAchievementCount(habitEntity.getAchievementCount());
-                    editResponseDto.setStopDate(habitEntity.getStopDate()); //중지일
-                    return editResponseDto;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(habitEditListDto)
-    }
-
 
 
     @PutMapping("habits/{habitId}/edit") //습관수정(이름, 기간, 공개여부)
@@ -134,12 +113,26 @@ public class HabitController {
 
     }
 
-    //습관 편집시 목록
-
+    @GetMapping("habits/edit-list") //편집시 습관목록조회(중지일 포함)
+    ResponseEntity<List<HabitEditResponseDto>> getHabitEditList(@RequestParam("email") String email) throws Exception{
+        List<HabitEntity> habits = habitService.findUndeletedAndAllHabits(email);
+        log.info("undeletedAndAllHabits: {}",habits);
+        List<HabitEditResponseDto> habitEditListDto = habits.stream()
+                .map(habitEntity -> {
+                    HabitEditResponseDto editResponseDto = new HabitEditResponseDto();
+                    habitService.setCommonHabitFields(editResponseDto,habitEntity); //공통필드 설정
+                    editResponseDto.setStopDate(habitEntity.getStopDate()); //중지일
+                    return editResponseDto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(habitEditListDto);
+    }
 
     @GetMapping("habits/{habitId}/reset") //매주마다 달성횟수 리셋
     ResponseEntity<String> resetAchievement(@PathVariable("habitId") Long habitId){
         habitService.resetAchievement(habitId);
         return ResponseEntity.ok("Resetting the achievement count was successful.");
     }
+
+
 }
