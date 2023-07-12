@@ -1,5 +1,6 @@
 package com.itsu.threedays.config;
 
+
 import com.itsu.threedays.config.jwt.JwtFilter;
 import com.itsu.threedays.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 
     private final JwtTokenProvider jwtTokenProvider;
 
