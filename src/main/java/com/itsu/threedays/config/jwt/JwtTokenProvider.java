@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,10 +30,6 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
-    }
-
-    public void setSecret(String secret){
-        this.secret = secret;
     }
 
     public String generateToken(UserEntity user, Long tokenValid){
@@ -77,13 +74,7 @@ public class JwtTokenProvider {
 
     // 인증 성공시 SecurityContextHolder에 저장할 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
-
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secret)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
+        Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
         //User 객체를 만들어서 Authentication 리턴
@@ -99,4 +90,18 @@ public class JwtTokenProvider {
         }
         return null;
     }
+    public Claims getClaims(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Duration getExpiryDuration(String token) { //만료기간 확인
+        Claims claims = getClaims(token);
+        Date expiration = claims.getExpiration();
+        return Duration.ofDays(expiration.getTime() - System.currentTimeMillis());
+    }
+
 }

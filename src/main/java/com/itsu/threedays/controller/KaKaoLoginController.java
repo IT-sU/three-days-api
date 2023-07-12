@@ -70,13 +70,14 @@ public class KaKaoLoginController {
                         .email(email)
                         .nickname(nickname)
                         .password(new BCryptPasswordEncoder().encode(email))
-//                        .fireBaseToken(userDto.getFirebaseToken())
                         .build();
                 String accessToken = tokenProvider.generateAccessToken(user);
                 log.info("accessToken: {}",accessToken);
 
                 String refreshToken = tokenProvider.generateRefreshToken(user);
                 log.info("refreshToken: {}",refreshToken);
+
+                user.setRefreshToken(refreshToken);
 
                 userService.saveUser(user);
                 log.info("user: {}",user);

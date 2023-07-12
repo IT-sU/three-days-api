@@ -1,7 +1,6 @@
 package com.itsu.threedays.service;
 
 
-import com.itsu.threedays.dto.HabitDto;
 import com.itsu.threedays.entity.HabitEntity;
 import com.itsu.threedays.entity.ProfileEntity;
 import com.itsu.threedays.entity.UserEntity;
@@ -11,7 +10,6 @@ import com.itsu.threedays.repository.ProfileRepository;
 import com.itsu.threedays.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,22 +41,11 @@ public class UserService {
        userRepository.save(user);
     }
 
-    public UserEntity getUserById(Long id){
-        Optional<UserEntity> byId = userRepository.findById(id);
-        return byId.get();
+    public UserEntity fineByRefreshToken(String refreshToken){
+        Optional<UserEntity> byRefreshToken = userRepository.findByRefreshToken(refreshToken);
+
+        return byRefreshToken.get();
     }
-
-    /**
-     * RefreshToken DB 저장(업데이트)
-     */
-//    public void updateRefreshToken(String email, String refreshToken) {
-//        userRepository.findByEmail(email)
-//                .ifPresentOrElse(
-//                        user -> user.updateRefreshToken(refreshToken),
-//                        () -> new Exception("일치하는 회원이 없습니다.")
-//                );
-//    }
-
 
     //유저 프로필 생성
     public List<HabitEntity> saveProfile(String email,String nickname,List<String> keywords){

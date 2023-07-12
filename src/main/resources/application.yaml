@@ -33,3 +33,5 @@ jwt:
 jasypt:
   encryptor:
     password: hcjweg3120
+#server:
+#  port: 5000 #Elastic Beanstalk deploy

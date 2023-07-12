@@ -30,6 +30,9 @@ public class UserEntity {
     @Column(name = "PASSWORD")
     private String password;
 
+    @Column(name = "REFRESH_TOKEN")
+    private String refreshToken;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
