@@ -19,6 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 .mvcMatchers("/api/**").permitAll()
+                .mvcMatchers("/swagger-ui/**").permitAll()
+                .mvcMatchers("/swagger-resources/**").permitAll()
+                .mvcMatchers("/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
 
