@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
     List<HabitEntity> findAllByUserId(UserEntity userId);
-
     Optional<HabitEntity> findById(Long habitId);
-
+    List<HabitEntity> findAllByUserIdAndDeleteYnAndStopDateIsNull(UserEntity userId, boolean deleteYn);
+    List<HabitEntity> findAllByDeleteYn(boolean deleteYn);
 }
