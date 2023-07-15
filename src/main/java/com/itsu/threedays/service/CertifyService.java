@@ -8,6 +8,7 @@ import com.itsu.threedays.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class CertifyService {
         certification.setHabit(habit);
         certification.setLevel(level);
         certification.setReview(review);
+        certification.setCreatedDate(LocalDateTime.now());
         certification.setImageUrls(imageUrls);
         certifyRepository.save(certification);
 

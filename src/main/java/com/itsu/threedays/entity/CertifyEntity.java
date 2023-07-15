@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,9 @@ public class CertifyEntity {
 
     @Column(name = "LEVEL")
     private int level;
+
+    @Column(name = "CREATED_DATE")
+    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(name = "HABIT_ID")
