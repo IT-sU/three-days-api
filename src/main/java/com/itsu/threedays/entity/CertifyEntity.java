@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -19,8 +20,10 @@ public class CertifyEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "IMAGE")
-    private String image;
+    @ElementCollection
+    @CollectionTable(name = "CERTIFY_IMAGES", joinColumns = @JoinColumn(name = "CERTIFY_ID"))
+    @Column(name = "IMAGE_URLS")
+    private List<String> imageUrls;
 
     @Column(name = "REVIEW")
     private String review;
