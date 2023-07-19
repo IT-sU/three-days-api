@@ -1,9 +1,8 @@
 package com.itsu.threedays.controller;
 
-import com.itsu.threedays.entity.FollowEntity;
+import com.itsu.threedays.dto.FollowUserDto;
 import com.itsu.threedays.entity.UserEntity;
-import com.itsu.threedays.repository.FollowRepository;
-import com.itsu.threedays.repository.UserRepository;
+import com.itsu.threedays.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,22 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("api/users")
 public class FollowController {
+    private final FollowService followService;
 
-    private final UserRepository userRepository;
-    private final FollowRepository followRepository;
-
-    @PostMapping("{fromUserId}/follow/{toUserId}")
+    @PostMapping("{fromUserId}/follow/{toUserId}")//팔로우하기
     ResponseEntity<?> Follow(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
-        UserEntity fromUser = userRepository.findById(fromUserId).get();
-        UserEntity toUser = userRepository.findById(toUserId).get();
-
-        FollowEntity follow = FollowEntity.builder()
-                .fromUser(fromUser)
-                .toUser(toUser)
-                .build();
-        followRepository.save(follow);
-        log.info("{} 이 {} 을 팔로우하였습니다.", fromUser.getNickname(), toUser.getNickname());
-
+        followService.followUser(fromUserId, toUserId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
