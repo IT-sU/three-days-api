@@ -8,6 +8,7 @@ import com.itsu.threedays.repository.CertifyImageRepository;
 import com.itsu.threedays.repository.CertifyRepository;
 import com.itsu.threedays.repository.HabitRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CertifyService {
 
@@ -45,7 +47,10 @@ public class CertifyService {
 
     public boolean deleteCertification(Long habitId) {
         try {
-            certifyRepository.deleteById(habitId);
+            List<CertifyEntity> byHabitId = certifyRepository.findByHabitId(habitId);
+            for (CertifyEntity certifyEntity : byHabitId) {
+                certifyRepository.delete(certifyEntity);
+            }
             return true;
         } catch (IllegalArgumentException e) {
             return false;
