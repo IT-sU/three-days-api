@@ -73,4 +73,10 @@ public class UserService {
         return habits.isEmpty() ? null : habits;
     }
 
+    public UserEntity getUser(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        return user;
+    }
+
 }
