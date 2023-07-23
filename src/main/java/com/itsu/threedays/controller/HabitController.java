@@ -6,6 +6,7 @@ import com.itsu.threedays.dto.HabitResponseDto;
 import com.itsu.threedays.dto.HabitUpdateRequestDto;
 import com.itsu.threedays.entity.HabitEntity;
 import com.itsu.threedays.entity.UserEntity;
+import com.itsu.threedays.service.CertifyService;
 import com.itsu.threedays.service.HabitService;
 import com.itsu.threedays.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class HabitController {
 
     private final HabitService habitService;
     private final UserService userService;
+    private final CertifyService certifyService;
 
     @PostMapping("habit")
         //습관 생성
@@ -95,9 +97,11 @@ public class HabitController {
         //습관삭제
     ResponseEntity<?> deleteHabit(@PathVariable("habitId") Long habitId) {
         habitService.deleteHabit(habitId);
-
-        return ResponseEntity.ok("Habit deleted successfully.");
-
+        if (certifyService.deleteCertification(habitId)) {
+            return ResponseEntity.ok("Habit deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Habit authentication ID does not exist.");
+        }
     }
 
     @PutMapping("habits/{habitId}/stop")
