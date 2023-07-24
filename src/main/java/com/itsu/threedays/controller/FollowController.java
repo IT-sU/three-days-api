@@ -38,28 +38,47 @@ public class FollowController {
 
     //팔로잉목록 - 닉네임, 프로필, 달성중인 습관갯수, 평균 달성률
     @GetMapping("followingList/me")
-    ResponseEntity<List<FollowUserDto>> getFollowingList(@RequestParam("email") String email) throws Exception {
+    ResponseEntity<List<FollowUserDto>> getFollowingList(@RequestParam("email") String email) {
         UserEntity byEmail = userService.findByEmail(email);
-        ProfileEntity profile = profileService.getProfile(byEmail);
-        List<HabitEntity> h = habitService.findUndeletedAndActiveHabits(email); //내 습관목록(메인페이지)
-        int totalRate = habitService.calculateAverageAchievementRate(h); //내 습관목록의 평균 달성률
         List<FollowEntity> followingList = followService.getFollowingList(byEmail.getId());
         log.info("followingList :{}", followingList);
         List<FollowUserDto> followDtoList = followingList.stream().map(follow -> {
             UserEntity toUser = follow.getToUser();
 
-            return FollowUserDto.builder()
-                    .id(toUser.getId())
-                    .profileImageUrl(toUser.getProfile_image())
-                    .nickname(profile.getNickname()) //profile의 nickname
-                    .totalAchievementRate(totalRate)
-                    .totalHabitCount(h.size()).build(); //내 습관목록들 갯수(=달성중)
-
+            return getFollowUserDto(toUser);
         }).collect(Collectors.toList());
         return ResponseEntity.ok(followDtoList);
     }
 
+    private FollowUserDto getFollowUserDto(UserEntity toUser) {
+        ProfileEntity profile = profileService.getProfile(toUser);
+        List<HabitEntity> h = null;
+        try {
+            h = habitService.findUndeletedAndActiveHabits(toUser.getEmail());
+            int totalRate = habitService.calculateAverageAchievementRate(h);
+            return FollowUserDto.builder()
+                    .id(toUser.getId())
+                    .profileImageUrl(toUser.getProfile_image()) //다른 유저의 프로필 이미지
+                    .nickname(profile.getNickname()) //다른 유저의 닉네임
+                    .totalAchievementRate(totalRate) //다른 유저의 습관평균달성률
+                    .totalHabitCount(h.size()).build(); //다른 유저의 습관갯수
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //팔로워목록 - 닉네임, 프로필, 달성중인 습관갯수, 평균 달성률
+    @GetMapping("followerList/me")
+    ResponseEntity<List<FollowUserDto>> getFollowerList(@RequestParam("email") String email) {
+        UserEntity byEmail = userService.findByEmail(email);
+        List<FollowEntity> followerList = followService.getFollowerList(byEmail.getId());
+        log.info("followerList :{}", followerList);
+        List<FollowUserDto> followerDtoList = followerList.stream().map(fwl -> {
+            UserEntity fromUser = fwl.getFromUser();
+            return getFollowUserDto(fromUser);
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(followerDtoList);
+    }
 
     //팔로우 삭제하기
 

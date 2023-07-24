@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
+    List<FollowEntity> findAllByToUser(UserEntity toUser); //본인을 팔로우한 목록
 
     List<FollowEntity> findAllByFromUser(UserEntity fromUser); //본인이 팔로우한 목록
 }

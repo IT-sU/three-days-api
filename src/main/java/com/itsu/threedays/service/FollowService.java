@@ -38,5 +38,11 @@ public class FollowService {
         return allByFromUser;
     }
 
+    public List<FollowEntity> getFollowerList(Long userId) { //본인을 팔로워한 목록조회
+        UserEntity user = userService.getUser(userId);
+        List<FollowEntity> allByToUser = followRepository.findAllByToUser(user);
+        return allByToUser;
+    }
+
 
 }
