@@ -1,6 +1,7 @@
 package com.itsu.threedays.controller;
 
 import com.itsu.threedays.dto.HabitDto;
+import com.itsu.threedays.dto.HabitEditResponseDto;
 import com.itsu.threedays.dto.HabitResponseDto;
 import com.itsu.threedays.dto.HabitUpdateRequestDto;
 import com.itsu.threedays.entity.HabitEntity;
@@ -63,9 +64,9 @@ public class HabitController {
     @GetMapping("habits")
         //습관목록 조회(메인페이지)
     ResponseEntity<List<HabitResponseDto>> getHabitList(@RequestParam("email") String email) throws Exception {
-        List<HabitEntity> allHabits = habitService.findAllHabits(email);
-        log.info("habits: {}", allHabits);
-        List<HabitResponseDto> habitResponseDtos = allHabits.stream()
+        List<HabitEntity> habits = habitService.findUndeletedAndActiveHabits(email);
+        log.info("habits: {}", habits);
+        List<HabitResponseDto> habitResponseDtos = habits.stream()
                 .map(habit -> {
                     HabitResponseDto responseDto = new HabitResponseDto();
                     responseDto.setId(habit.getId());
@@ -75,13 +76,12 @@ public class HabitController {
                     responseDto.setComboCount(habit.getComboCount());
                     responseDto.setAchievementRate(habit.getAchievementRate());
                     responseDto.setAchievementCount(habit.getAchievementCount());
-                    responseDto.setDeleteYn(habit.isDeleteYn());
-                    responseDto.setStopDate(habit.getStopDate());
                     return responseDto;
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(habitResponseDtos);
     }
+
 
     @PutMapping("habits/{habitId}/edit")
         //습관수정(이름, 기간, 공개여부)
@@ -118,6 +118,22 @@ public class HabitController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
 
+    }
+
+    @GetMapping("habits/edit-list")
+        //편집시 습관목록조회(중지일 포함)
+    ResponseEntity<List<HabitEditResponseDto>> getHabitEditList(@RequestParam("email") String email) throws Exception {
+        List<HabitEntity> habits = habitService.findUndeletedAndAllHabits(email);
+        log.info("undeletedAndAllHabits: {}", habits);
+        List<HabitEditResponseDto> habitEditListDto = habits.stream()
+                .map(habitEntity -> {
+                    HabitEditResponseDto editResponseDto = new HabitEditResponseDto();
+                    habitService.setCommonHabitFields(editResponseDto, habitEntity); //공통필드 설정
+                    editResponseDto.setStopDate(habitEntity.getStopDate()); //중지일
+                    return editResponseDto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(habitEditListDto);
     }
 
     @GetMapping("habits/{habitId}/reset")

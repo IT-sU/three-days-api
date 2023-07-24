@@ -15,4 +15,6 @@ public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
     Optional<HabitEntity> findById(Long habitId);
 
     List<HabitEntity> findAllByUserIdAndDeleteYnAndStopDateIsNull(UserEntity userId, boolean deleteYn);
+
+    List<HabitEntity> findAllByDeleteYn(boolean deleteYn);
 }

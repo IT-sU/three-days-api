@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,7 +17,4 @@ public class HabitResponseDto {
     int comboCount;
     int achievementRate;
     int achievementCount;
-    boolean deleteYn;
-    LocalDateTime stopDate;
-
 }
