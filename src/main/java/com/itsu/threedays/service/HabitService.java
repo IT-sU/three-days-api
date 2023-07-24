@@ -41,6 +41,17 @@ public class HabitService {
         }
     }
 
+    public List<HabitEntity> findAllHabits(String email) throws Exception {
+        Optional<UserEntity> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent()) {
+            UserEntity user = byEmail.get();
+            log.info("email로 user 찾기:{}", user.getEmail());
+            return habitRepository.findAllByUserId(user);
+        } else {
+            throw new Exception("User NOT FOUND!");
+        }
+    }
+
     public int calculateAverageAchievementRate(List<HabitEntity> activeHabits) {
         if (!activeHabits.isEmpty()) {
             log.info("!activeHabits.isEmpty(): {}", !activeHabits.isEmpty());
@@ -53,18 +64,6 @@ public class HabitService {
             return averageAchievementRate;
         } else {
             return 0;
-        }
-    }
-
-
-    public List<HabitEntity> findUndeletedAndAllHabits(String email) throws Exception { //삭제여부 false 전부(중지일 상관없이 = 그만두기 포함)
-        Optional<UserEntity> byEmail = userRepository.findByEmail(email);
-        if (byEmail.isPresent()) {
-            UserEntity user = byEmail.get();
-            log.info("email로 user 찾기:{}", user.getEmail());
-            return habitRepository.findAllByDeleteYn(false);
-        } else {
-            throw new Exception("User NOT FOUND!");
         }
     }
 
@@ -85,13 +84,6 @@ public class HabitService {
             HabitEntity updatedHabit = habitRepository.save(habit);
 
             HabitResponseDto habitResponseDto = new HabitResponseDto();
-//            habitResponseDto.setId(updatedHabit.getId());
-//            habitResponseDto.setTitle(updatedHabit.getTitle());
-//            habitResponseDto.setDuration(updatedHabit.getDuration());
-//            habitResponseDto.setVisible(updatedHabit.isVisible());
-//            habitResponseDto.setComboCount(updatedHabit.getComboCount());
-//            habitResponseDto.setAchievementRate(updatedHabit.getAchievementRate());
-//            habitResponseDto.setAchievementCount(updatedHabit.getAchievementCount());
             setCommonHabitFields(habitResponseDto, updatedHabit);
 
             return habitResponseDto;
