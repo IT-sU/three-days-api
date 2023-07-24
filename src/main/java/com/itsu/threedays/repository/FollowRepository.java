@@ -1,9 +1,14 @@
 package com.itsu.threedays.repository;
 
 import com.itsu.threedays.entity.FollowEntity;
+import com.itsu.threedays.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
+
+    List<FollowEntity> findAllByFromUser(UserEntity fromUser); //본인이 팔로우한 목록
 }

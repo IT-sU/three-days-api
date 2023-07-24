@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,4 +31,12 @@ public class FollowService {
                 .build();
         followRepository.save(follow);
     }
+
+    public List<FollowEntity> getFollowingList(Long userId) { //본인이 팔로잉한 목록조회
+        UserEntity user = userService.getUser(userId);
+        List<FollowEntity> allByFromUser = followRepository.findAllByFromUser(user);
+        return allByFromUser;
+    }
+
+
 }
