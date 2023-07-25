@@ -44,13 +44,14 @@ public class HabitService {
     public int calculateAverageAchievementRate(List<HabitEntity> activeHabits) {
         if (!activeHabits.isEmpty()) {
             log.info("!activeHabits.isEmpty(): {}", !activeHabits.isEmpty());
-            int totalAchievementRate = 0;
+            double totalAchievementRate = 0;
             for (HabitEntity habit : activeHabits) {
                 totalAchievementRate += habit.getAchievementRate();
             }
-            int averageAchievementRate = totalAchievementRate / activeHabits.size();
+            double averageAchievementRate = totalAchievementRate / activeHabits.size();
+            int roundedAverage = (int) Math.round(averageAchievementRate);
             log.info("습관 평균달성률 - 피드 :{}", averageAchievementRate);
-            return averageAchievementRate;
+            return roundedAverage;
         } else {
             return 0;
         }
