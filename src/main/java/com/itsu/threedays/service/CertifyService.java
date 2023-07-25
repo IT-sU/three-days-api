@@ -56,4 +56,9 @@ public class CertifyService {
             return false;
         }
     }
+
+    public List<CertifyEntity> getCertifiesByHabitId(Long habitId) {
+        List<CertifyEntity> byHabitId = certifyRepository.findByHabitId(habitId);
+        return byHabitId;
+    }
 }
