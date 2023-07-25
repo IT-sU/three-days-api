@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,17 +18,6 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserService userService;
 
-    public void followUser(Long fromUserId, Long toUserId) {
-        UserEntity fromUser = userService.getUser(fromUserId);
-        UserEntity toUser = userService.getUser(toUserId);
-        log.info("{}이 {}를 팔로우했습니다.", fromUser.getNickname(), toUser.getNickname());
-
-        FollowEntity follow = FollowEntity.builder()
-                .fromUser(fromUser)
-                .toUser(toUser)
-                .createdDate(LocalDateTime.now())
-                .build();
-        followRepository.save(follow);
     }
 
     public List<FollowEntity> getFollowingList(Long userId) { //본인이 팔로잉한 목록조회
