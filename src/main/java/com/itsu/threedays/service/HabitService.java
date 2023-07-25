@@ -41,6 +41,17 @@ public class HabitService {
         }
     }
 
+    public List<HabitEntity> findPublicHabitsByUserId(Long userId) throws Exception { //삭제여부 false, 중지일 null, + 공개여부 true인거
+        Optional<UserEntity> byId = userRepository.findById(userId);
+        if (byId.isPresent()) {
+            UserEntity user = byId.get();
+            log.info("{}유저의 userId - {}", user.getNickname(), user.getId());
+            return habitRepository.findAllByUserIdAndDeleteYnAndStopDateIsNullAndVisibleIsTrue(user, false);
+        } else {
+            throw new Exception("User NOT FOUND!");
+        }
+    }
+
     public int calculateAverageAchievementRate(List<HabitEntity> activeHabits) {
         if (!activeHabits.isEmpty()) {
             log.info("!activeHabits.isEmpty(): {}", !activeHabits.isEmpty());
