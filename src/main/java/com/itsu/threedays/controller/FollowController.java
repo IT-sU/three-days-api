@@ -31,7 +31,7 @@ public class FollowController {
 
     @PostMapping("{fromUserId}/follow/{toUserId}")
 //팔로우하기
-    ResponseEntity<?> Follow(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
+    ResponseEntity<?> follow(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
         followService.followUser(fromUserId, toUserId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
