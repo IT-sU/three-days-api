@@ -39,7 +39,7 @@ public class FeedController {
     private final CertifyService certifyService;
 
     //내프로필 피드 보기
-    @GetMapping("me")
+    @GetMapping("profile/me")
     ResponseEntity<UserProfileDto> getMyProfileFeed(@RequestParam("email") String email) throws Exception {
 
         UserEntity byEmail = userService.findByEmail(email);
@@ -100,7 +100,7 @@ public class FeedController {
     }
 
     //다른 유저의 프로필 피드보기
-    @GetMapping("{userId}")
+    @GetMapping("profile/{userId}")
     ResponseEntity<UserProfileDto> getUserProfileFeed(@PathVariable Long userId) throws Exception {
 
         UserEntity user = userService.getUser(userId);
