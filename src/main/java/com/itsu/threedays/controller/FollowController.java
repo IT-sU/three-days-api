@@ -93,6 +93,14 @@ public class FollowController {
     }
 
     //팔로우 삭제하기
-
-
+    @DeleteMapping("{fromUserId}/unfollow/{toUserId}")
+    //팔로우 취소
+    ResponseEntity<String> unFollow(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
+        try {
+            followService.unFollowUser(fromUserId, toUserId);
+            return ResponseEntity.ok("언팔로우가 성공적으로 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

@@ -3,7 +3,6 @@ package com.itsu.threedays.service;
 import com.itsu.threedays.entity.FollowEntity;
 import com.itsu.threedays.entity.UserEntity;
 import com.itsu.threedays.repository.FollowRepository;
-import com.itsu.threedays.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,10 +13,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class FollowService {
-    private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final UserService userService;
 
+    public void unFollowUser(Long fromUserId, Long toUserId) throws Exception {
+        FollowEntity follow = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+        if (follow != null) {
+            followRepository.delete(follow);
+        } else {
+            throw new Exception("해당 팔로우 관계를 찾을 수 없습니다.");
+        }
     }
 
     public List<FollowEntity> getFollowingList(Long userId) { //본인이 팔로잉한 목록조회
