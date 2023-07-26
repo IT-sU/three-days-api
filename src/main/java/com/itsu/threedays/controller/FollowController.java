@@ -70,7 +70,7 @@ public class FollowController {
             int totalRate = habitService.calculateAverageAchievementRate(h);
             return FollowUserDto.builder()
                     .id(toUser.getId())
-                    .profileImageUrl(toUser.getProfile_image()) //다른 유저의 프로필 이미지
+                    .profileImageUrl(toUser.getProfilImage()) //다른 유저의 프로필 이미지
                     .nickname(profile.getNickname()) //다른 유저의 닉네임
                     .totalAchievementRate(totalRate) //다른 유저의 습관평균달성률
                     .totalHabitCount(h.size()).build(); //다른 유저의 습관갯수
