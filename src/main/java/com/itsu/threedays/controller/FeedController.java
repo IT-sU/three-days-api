@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,26 +75,30 @@ public class FeedController {
             userProfileHabitDto.setHabitId(habit.getId());
             userProfileHabitDto.setTitle(habit.getTitle());
             userProfileHabitDto.setCreatedHabit(habit.getCreatedDate()); //습관이 만들어진 날짜로 저장
+            try {
+                List<CertifyEntity> certifiesByHabitId = certifyService.getCertifiesByHabitId(habit.getId());
 
-            List<CertifyEntity> certifiesByHabitId = certifyService.getCertifiesByHabitId(habit.getId());
+                List<CertifyDto> certifyDtos = new ArrayList<>();
+                for (CertifyEntity certify : certifiesByHabitId) {
+                    CertifyDto certifyDto = new CertifyDto();
+                    certifyDto.setCertifyId(certify.getId());
+                    certifyDto.setReview(certify.getReview());
+                    certifyDto.setLevel(certify.getLevel());
+                    certifyDto.setCertifiedDate(certify.getCreatedDate()); //습관인증한 날짜로 저장
 
-            List<CertifyDto> certifyDtos = new ArrayList<>();
-            for (CertifyEntity certify : certifiesByHabitId) {
-                CertifyDto certifyDto = new CertifyDto();
-                certifyDto.setCertifyId(certify.getId());
-                certifyDto.setReview(certify.getReview());
-                certifyDto.setLevel(certify.getLevel());
-                certifyDto.setCertifiedDate(certify.getCreatedDate()); //습관인증한 날짜로 저장
-
-                // CertifyEntity의 이미지 목록인 images에서 imageUrl을 추출하여 CertifyDto에 추가
-                List<String> imageUrls = new ArrayList<>();
-                for (CertifyImageEntity image : certify.getImages()) {
-                    imageUrls.add(image.getImageUrl());
+                    // CertifyEntity의 이미지 목록인 images에서 imageUrl을 추출하여 CertifyDto에 추가
+                    List<String> imageUrls = new ArrayList<>();
+                    for (CertifyImageEntity image : certify.getImages()) {
+                        imageUrls.add(image.getImageUrl());
+                    }
+                    certifyDto.setImagUrls(imageUrls);
+                    certifyDtos.add(certifyDto);
                 }
-                certifyDto.setImagUrls(imageUrls);
-                certifyDtos.add(certifyDto);
+                userProfileHabitDto.setCertifyDtos(certifyDtos);
+            } catch (Exception e) {
+                // 인증 정보가 없는 경우, 빈 목록 또는 null로 처리
+                userProfileHabitDto.setCertifyDtos(Collections.emptyList());
             }
-            userProfileHabitDto.setCertifyDtos(certifyDtos);
             habitList.add(userProfileHabitDto);
 
         }
@@ -123,6 +128,7 @@ public class FeedController {
         log.info("팔로워 수 : {}", followerCount);
 
         UserProfileDto userProfileDto = new UserProfileDto();
+
         userProfileDto.setKakaoImageUrl(user.getProfileImage()); //카카오프로필
         userProfileDto.setNickname(profileByEmail.getNickname()); //닉네임(유저가 정한)
         userProfileDto.setKeywords(profileByEmail.getKeywords()); //키워드(유저가 정한)
@@ -138,25 +144,30 @@ public class FeedController {
             userProfileHabitDto.setTitle(habit.getTitle());
             userProfileHabitDto.setCreatedHabit(habit.getCreatedDate()); //습관이 만들어진 날짜로 저장
 
-            List<CertifyEntity> certifiesByHabitId = certifyService.getCertifiesByHabitId(habit.getId());
+            try {
+                List<CertifyEntity> certifiesByHabitId = certifyService.getCertifiesByHabitId(habit.getId());
 
-            List<CertifyDto> certifyDtos = new ArrayList<>();
-            for (CertifyEntity certify : certifiesByHabitId) {
-                CertifyDto certifyDto = new CertifyDto();
-                certifyDto.setCertifyId(certify.getId());
-                certifyDto.setReview(certify.getReview());
-                certifyDto.setLevel(certify.getLevel());
-                certifyDto.setCertifiedDate(certify.getCreatedDate()); //습관인증한 날짜로 저장
+                List<CertifyDto> certifyDtos = new ArrayList<>();
+                for (CertifyEntity certify : certifiesByHabitId) {
+                    CertifyDto certifyDto = new CertifyDto();
+                    certifyDto.setCertifyId(certify.getId());
+                    certifyDto.setReview(certify.getReview());
+                    certifyDto.setLevel(certify.getLevel());
+                    certifyDto.setCertifiedDate(certify.getCreatedDate()); //습관인증한 날짜로 저장
 
-                // CertifyEntity의 이미지 목록인 images에서 imageUrl을 추출하여 CertifyDto에 추가
-                List<String> imageUrls = new ArrayList<>();
-                for (CertifyImageEntity image : certify.getImages()) {
-                    imageUrls.add(image.getImageUrl());
+                    // CertifyEntity의 이미지 목록인 images에서 imageUrl을 추출하여 CertifyDto에 추가
+                    List<String> imageUrls = new ArrayList<>();
+                    for (CertifyImageEntity image : certify.getImages()) {
+                        imageUrls.add(image.getImageUrl());
+                    }
+                    certifyDto.setImagUrls(imageUrls);
+                    certifyDtos.add(certifyDto);
                 }
-                certifyDto.setImagUrls(imageUrls);
-                certifyDtos.add(certifyDto);
+                userProfileHabitDto.setCertifyDtos(certifyDtos);
+            } catch (Exception e) {
+                // 인증 정보가 없는 경우, 빈 목록 또는 null로 처리
+                userProfileHabitDto.setCertifyDtos(Collections.emptyList());
             }
-            userProfileHabitDto.setCertifyDtos(certifyDtos);
             habitList.add(userProfileHabitDto);
 
         }

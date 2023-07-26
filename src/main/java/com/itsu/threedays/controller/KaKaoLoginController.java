@@ -30,6 +30,7 @@ public class KaKaoLoginController {
 
     private final UserService userService;
     private final JwtTokenProvider tokenProvider;
+    private static final String DEFAULT_IMAGE_URL = "https://itsubucket.s3.ap-northeast-2.amazonaws.com/certify-image/Untitled.png";
 
     @PostMapping("/login")
     ResponseEntity<?> responseJwtToken(@RequestBody UserDto userDto) { //파베 토큰, 엑세스 토큰, 디바이스 아디 받아옴
@@ -66,7 +67,7 @@ public class KaKaoLoginController {
                         .email(email)
                         .nickname(nickname)
                         .password(new BCryptPasswordEncoder().encode(email))
-                        //.profileImage(profileImageUrl)
+                        .profileImage(DEFAULT_IMAGE_URL)
                         .build();
                 String accessToken = tokenProvider.generateAccessToken(user);
                 log.info("accessToken: {}", accessToken);
