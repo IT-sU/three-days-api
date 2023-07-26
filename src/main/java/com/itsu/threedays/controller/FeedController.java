@@ -1,6 +1,7 @@
 package com.itsu.threedays.controller;
 
 import com.itsu.threedays.dto.CertifyDto;
+import com.itsu.threedays.dto.FeedItemDto;
 import com.itsu.threedays.dto.UserProfileDto;
 import com.itsu.threedays.dto.UserProfileHabitDto;
 import com.itsu.threedays.entity.*;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -160,5 +163,51 @@ public class FeedController {
         userProfileDto.setHabitList(habitList);
 
         return ResponseEntity.ok(userProfileDto);
+    }
+
+    @GetMapping("users")
+//메인페이지 피드
+    ResponseEntity<List<FeedItemDto>> getUserFeed(@RequestParam("email") String email) throws Exception {
+        UserEntity byEmail = userService.findByEmail(email); //이메일로 유저 접근
+        List<UserEntity> followingUsers = followService.getFollowingUsers(byEmail.getId());
+        List<CertifyEntity> allCertifies = new ArrayList<>();
+
+        // 모든 팔로우한 유저의 인증 정보를 가져와서 리스트에 추가
+        for (UserEntity user : followingUsers) {
+            List<HabitEntity> habits = habitService.findPublicHabitsByUserId(user.getId());
+            for (HabitEntity habit : habits) {
+                List<CertifyEntity> certifies = certifyService.getCertifiesByHabitId(habit.getId());
+                allCertifies.addAll(certifies);
+            }
+        }
+
+        // 인증 정보를 최신 순서로 정렬
+        allCertifies.sort(Comparator.comparing(CertifyEntity::getCreatedDate).reversed());
+
+        List<FeedItemDto> feedItemDtos = allCertifies.stream()
+                .map(certify -> {
+                    FeedItemDto feedItemDto = new FeedItemDto();
+                    feedItemDto.setUserId(certify.getHabit().getUserId().getId());
+                    feedItemDto.setKakaoImageUrl(certify.getHabit().getUserId().getProfileImage());
+                    ProfileEntity profile = profileService.getProfile(certify.getHabit().getUserId());
+                    feedItemDto.setNickname(profile.getNickname());
+                    feedItemDto.setTitle(certify.getHabit().getTitle());
+
+                    // CertifyEntity의 이미지 목록인 images에서 imageUrl을 추출하여 CertifyDto에 추가
+                    List<String> imageUrls = certify.getImages().stream()
+                            .map(CertifyImageEntity::getImageUrl)
+                            .collect(Collectors.toList());
+                    feedItemDto.setCertifyImages(imageUrls);
+
+                    feedItemDto.setReview(certify.getReview());
+                    feedItemDto.setLevel(certify.getLevel());
+                    feedItemDto.setCreatedHabit(certify.getHabit().getCreatedDate());
+                    feedItemDto.setCertifiedDate(certify.getCreatedDate());
+
+                    return feedItemDto;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(feedItemDtos);
     }
 }
