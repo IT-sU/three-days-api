@@ -49,7 +49,7 @@ public class FeedController {
         int totalAchievementRate = habitService.calculateAverageAchievementRate(undeletedAndActiveHabits);
         int followerCount = followService.getFollowerList(byEmail.getId()).size();
 
-        log.info("카카오프로필: {}", byEmail.getProfile_image());
+        log.info("카카오프로필: {}", byEmail.getProfileImage());
         log.info("닉네임: {}", profileByEmail.getNickname());
         log.info("키워드: {}", profileByEmail.getKeywords());
         log.info("달성률(달성중인 습관의 평균): {}", totalAchievementRate);
@@ -57,7 +57,7 @@ public class FeedController {
         log.info("팔로워 수 : {}", followerCount);
 
         UserProfileDto userProfileDto = new UserProfileDto();
-        userProfileDto.setKakaoImageUrl(byEmail.getProfile_image()); //카카오프로필
+        userProfileDto.setKakaoImageUrl(byEmail.getProfileImage()); //카카오프로필
         userProfileDto.setNickname(profileByEmail.getNickname()); //닉네임(유저가 정한)
         userProfileDto.setKeywords(profileByEmail.getKeywords()); //키워드(유저가 정한)
         userProfileDto.setTotalAchievementRate(totalAchievementRate); //달성률(달성중인 습관의 평균)
@@ -112,7 +112,7 @@ public class FeedController {
         int totalAchievementRate = habitService.calculateAverageAchievementRate(undeletedAndActiveHabits);
         int followerCount = followService.getFollowerList(user.getId()).size();
 
-        log.info("카카오프로필: {}", user.getProfile_image());
+        log.info("카카오프로필: {}", user.getProfileImage());
         log.info("닉네임: {}", profileByEmail.getNickname());
         log.info("키워드: {}", profileByEmail.getKeywords());
         log.info("달성률(달성중인 습관의 평균): {}", totalAchievementRate);
@@ -120,7 +120,7 @@ public class FeedController {
         log.info("팔로워 수 : {}", followerCount);
 
         UserProfileDto userProfileDto = new UserProfileDto();
-        userProfileDto.setKakaoImageUrl(user.getProfile_image()); //카카오프로필
+        userProfileDto.setKakaoImageUrl(user.getProfileImage()); //카카오프로필
         userProfileDto.setNickname(profileByEmail.getNickname()); //닉네임(유저가 정한)
         userProfileDto.setKeywords(profileByEmail.getKeywords()); //키워드(유저가 정한)
         userProfileDto.setTotalAchievementRate(totalAchievementRate); //달성률(달성중인 습관의 평균)
