@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +36,18 @@ public class FollowService {
         UserEntity user = userService.getUser(userId);
         List<FollowEntity> allByToUser = followRepository.findAllByToUser(user);
         return allByToUser;
+    }
+
+    public List<UserEntity> getFollowingUsers(Long userId) {
+        List<FollowEntity> followList = getFollowingList(userId);
+
+        List<UserEntity> followingUsers = new ArrayList<>();
+        for (FollowEntity follow : followList) {
+            UserEntity followingUser = follow.getToUser();
+            followingUsers.add(followingUser);
+        }
+
+        return followingUsers;
     }
 
 
