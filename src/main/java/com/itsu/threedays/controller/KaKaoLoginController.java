@@ -14,11 +14,12 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,7 +66,7 @@ public class KaKaoLoginController {
                         .email(email)
                         .nickname(nickname)
                         .password(new BCryptPasswordEncoder().encode(email))
-                        //.profile_image(profileImageUrl)
+                        //.profileImage(profileImageUrl)
                         .build();
                 String accessToken = tokenProvider.generateAccessToken(user);
                 log.info("accessToken: {}", accessToken);
@@ -106,21 +107,6 @@ public class KaKaoLoginController {
             throw new RuntimeException(e);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testApi(HttpServletRequest request) {
-        String jwt = tokenProvider.resolveToken(request);
-        log.info("testApi - jwt: {}", jwt);
-        if (jwt == null) {
-            return new ResponseEntity<>("JWT not found!", HttpStatus.BAD_REQUEST);
-        }
-
-        if (tokenProvider.validateToken(jwt)) {
-            return new ResponseEntity<>("JWT is valid", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("JWT is invalid", HttpStatus.UNAUTHORIZED);
-        }
     }
 
 }
