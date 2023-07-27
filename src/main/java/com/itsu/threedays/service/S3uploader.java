@@ -29,6 +29,23 @@ public class S3uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    //    public List<String> upload(List<MultipartFile> multipartFiles, String dirName) throws IOException {
+//        List<String> imageUrls = new ArrayList<>();
+//
+//        for (MultipartFile multipartFile : multipartFiles) {
+//            byte[] fileBytes = multipartFile.getBytes();
+//            String fileName = dirName + "/" + multipartFile.getOriginalFilename(); // S3 객체의 파일 이름을 설정
+//            String imageUrl = putS3(fileBytes, fileName);
+//            imageUrls.add(imageUrl); // 업로드된 파일의 S3 URL을 이미지 URL 목록에 추가
+//        }
+//        return imageUrls;
+//    }
+    public String upload(MultipartFile multipartFile, String fileName) throws IOException {
+        byte[] fileBytes = multipartFile.getBytes();
+        String imageUrl = putS3(fileBytes, fileName);
+        return imageUrl;
+    }
+
     public List<String> upload(List<MultipartFile> multipartFiles, String dirName) throws IOException {
         List<String> imageUrls = new ArrayList<>();
 
