@@ -26,15 +26,6 @@ import java.util.stream.Collectors;
 @RequestMapping("api/feed")
 @Slf4j
 public class FeedController {
-    /***
-     String kakaoImageUrl; //카카오프로필
-     String nickname; //닉네임(유저가 정한)
-     List<String> keywords; //키워드(유저가 정한)
-     int totalAchievementRate; //달성률(달성중인 습관의 평균)
-     int totalHabitCount; //달성중인 습관갯수
-     int followerCount; //팔로워 수
-     List<UserProfileHabitDto> habitList; //습관들(다른유저: 공개만, 나: 공개비공개 전부)
-     ***/
 
     private final UserService userService;
     private final ProfileService profileService;
@@ -52,13 +43,6 @@ public class FeedController {
         log.info("그만두지 않고, 삭제도 하지않은 습관목록리스트: {}", undeletedAndActiveHabits);
         int totalAchievementRate = habitService.calculateAverageAchievementRate(undeletedAndActiveHabits);
         int followerCount = followService.getFollowerList(byEmail.getId()).size();
-
-        log.info("카카오프로필: {}", byEmail.getProfileImage());
-        log.info("닉네임: {}", profileByEmail.getNickname());
-        log.info("키워드: {}", profileByEmail.getKeywords());
-        log.info("달성률(달성중인 습관의 평균): {}", totalAchievementRate);
-        log.info("달성중인 습관갯수 : {}", undeletedAndActiveHabits.size());
-        log.info("팔로워 수 : {}", followerCount);
 
         UserProfileDto userProfileDto = new UserProfileDto();
         userProfileDto.setKakaoImageUrl(byEmail.getProfileImage()); //카카오프로필
