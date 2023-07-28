@@ -74,7 +74,7 @@ public class HabitService {
         if (byEmail.isPresent()) {
             UserEntity user = byEmail.get();
             log.info("email로 user 찾기:{}", user.getEmail());
-            return habitRepository.findAllByDeleteYn(false);
+            return habitRepository.findAllByUserIdAndDeleteYn(user, false);
         } else {
             throw new Exception("User NOT FOUND!");
         }

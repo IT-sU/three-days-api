@@ -132,6 +132,20 @@ public class HabitController {
                     editResponseDto.setStopDate(habitEntity.getStopDate()); //중지일
                     return editResponseDto;
                 })
+                .sorted((habit1, habit2) -> {
+                    LocalDateTime stopDate1 = habit1.getStopDate();
+                    LocalDateTime stopDate2 = habit2.getStopDate();
+
+                    if (stopDate1 == null && stopDate2 == null) {
+                        return 0;
+                    } else if (stopDate1 == null) {
+                        return -1; // habit1이 null이므로 habit1이 먼저 정렬됨
+                    } else if (stopDate2 == null) {
+                        return 1; // habit2가 null이므로 habit2가 먼저 정렬됨
+                    } else {
+                        return stopDate1.compareTo(stopDate2); // 둘 다 null이 아니면 일반적으로 정렬
+                    }
+                })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(habitEditListDto);
     }
