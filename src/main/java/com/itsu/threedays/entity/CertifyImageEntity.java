@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-//@EntityListeners(CertifyImageEntityListener.class)
 @Table(name = "CERTIFY_IMAGE_ENTITY")
 public class CertifyImageEntity {
     @Id
