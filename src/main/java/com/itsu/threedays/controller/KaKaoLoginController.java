@@ -30,7 +30,7 @@ public class KaKaoLoginController {
 
     private final UserService userService;
     private final JwtTokenProvider tokenProvider;
-    private static final String DEFAULT_IMAGE_URL = "https://itsubucket.s3.ap-northeast-2.amazonaws.com/certify-image/Untitled.png";
+    private static final String DEFAULT_IMAGE_URL = "https://itsubucket.s3.ap-northeast-2.amazonaws.com/certify-image/threedays2023_image.png";
 
     @PostMapping("/login")
     ResponseEntity<?> responseJwtToken(@RequestBody UserDto userDto) { //파베 토큰, 엑세스 토큰, 디바이스 아디 받아옴
