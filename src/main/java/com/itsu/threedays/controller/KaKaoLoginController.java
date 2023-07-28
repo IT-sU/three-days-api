@@ -41,7 +41,7 @@ public class KaKaoLoginController {
         //Bearer 이후 한칸 띄기(kakao) +  accesstoken 헤더에 넣어야함
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(httpHeaders);
-        
+
         RestTemplate restTemplate = new RestTemplate(); //서버에서 다른서버로 연결할 때 쓰는 RestTemplate
         try {
             ResponseEntity<String> response = restTemplate.exchange(KAKAO_USERINFO_REQUEST_URL, HttpMethod.GET, request, String.class);
@@ -88,21 +88,7 @@ public class KaKaoLoginController {
                 return ResponseEntity.ok(kakaoUserInfoDto);
 
             }
-//            else {
-//                log.info("이미 등록된 회원");
-//                if (!userIdService.getUserId(email).get().getFireBaseToken().equals(loginDto.getFirebaseToken())) { //파이어베이스 토큰 다르면 업데이트
-//                    log.info("firebaseToken Update");
-//                    User userId = userService.getUserId(email).get();
-////                    userId.setFireBaseToken(userDto.getFirebaseToken());
-//                    userService.saveUser(userId);
-//                }
-//
-//                User updateUser = new User(email, "", Collections.singleton(simpleGrantedAuthority));
-//                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(updateUser, userDto.getKakaoAccessToken(), Collections.singleton(simpleGrantedAuthority));
-//                String token = tokenProvider.createToken(usernamePasswordAuthenticationToken);
-//                log.info("token 발급: {}", token);
-//                return new ResponseEntity<>(token, HttpStatus.OK);
-//            }
+
         } catch (HttpClientErrorException e) {
             log.error("access token err : {}", e.getMessage());
         } catch (Exception e) {
