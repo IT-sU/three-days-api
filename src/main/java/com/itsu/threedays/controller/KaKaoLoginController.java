@@ -33,7 +33,7 @@ public class KaKaoLoginController {
     private static final String DEFAULT_IMAGE_URL = "https://itsubucket.s3.ap-northeast-2.amazonaws.com/certify-image/threedays2023_image.png";
 
     @PostMapping("/login")
-    ResponseEntity<?> responseJwtToken(@RequestBody UserDto userDto) { //파베 토큰, 엑세스 토큰, 디바이스 아디 받아옴
+    ResponseEntity<KakaoUserInfoDto> responseJwtToken(@RequestBody UserDto userDto) { //파베 토큰, 엑세스 토큰, 디바이스 아디 받아옴
         String KAKAO_USERINFO_REQUEST_URL = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -79,12 +79,13 @@ public class KaKaoLoginController {
 
                 userService.saveUser(user);
                 log.info("user: {}", user);
+                KakaoUserInfoDto kakaoUserInfoDto = new KakaoUserInfoDto();
+                kakaoUserInfoDto.setUserId(user.getId());
+                kakaoUserInfoDto.setEmail(user.getEmail());
+                kakaoUserInfoDto.setTokenDto(TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build());
+                kakaoUserInfoDto.setNickname(user.getNickname());
 
-                return new ResponseEntity<>(KakaoUserInfoDto.builder()
-                        .email(user.getEmail())
-                        .nickname(user.getNickname())
-                        .tokenDto(TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build())
-                        .build(), HttpStatus.OK);
+                return ResponseEntity.ok(kakaoUserInfoDto);
 
             }
 //            else {

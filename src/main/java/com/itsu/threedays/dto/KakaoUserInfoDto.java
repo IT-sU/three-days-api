@@ -1,6 +1,5 @@
 package com.itsu.threedays.dto;
 
-import com.itsu.threedays.dto.TokenDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +13,6 @@ public class KakaoUserInfoDto {
     String email;
     String nickname;
     TokenDto tokenDto;
+    Long userId;
 
 }
