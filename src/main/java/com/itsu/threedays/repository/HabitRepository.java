@@ -16,4 +16,6 @@ public interface HabitRepository extends JpaRepository<HabitEntity, Long> {
     List<HabitEntity> findAllByDeleteYn(boolean deleteYn);
 
     List<HabitEntity> findAllByUserIdAndDeleteYnAndStopDateIsNullAndVisibleIsTrue(UserEntity userId, boolean deleteYn);
+
+    List<HabitEntity> findAllByTitleContaining(String title);
 }

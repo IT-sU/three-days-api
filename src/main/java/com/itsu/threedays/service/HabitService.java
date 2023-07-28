@@ -214,5 +214,8 @@ public class HabitService {
         habitDto.setAchievementCount(habitEntity.getAchievementCount());
     }
 
-
+    public List<HabitEntity> getContentsByTitle(String title) {
+        List<HabitEntity> allBYTitleContaining = habitRepository.findAllByTitleContaining(title);
+        return allBYTitleContaining;
+    }
 }
