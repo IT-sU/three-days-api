@@ -20,4 +20,5 @@ public class UserProfileDto { //SNS 내프로필에 필요한 정보
     int totalHabitCount; //달성중인 습관갯수
     int followerCount; //팔로워 수
     List<UserProfileHabitDto> habitList; //습관들
+    boolean isFollowing;
 }

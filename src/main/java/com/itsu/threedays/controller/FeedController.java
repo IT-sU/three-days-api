@@ -67,6 +67,7 @@ public class FeedController {
         userProfileDto.setTotalAchievementRate(totalAchievementRate); //달성률(달성중인 습관의 평균)
         userProfileDto.setTotalHabitCount(undeletedAndActiveHabits.size()); //달성중인 습관갯수
         userProfileDto.setFollowerCount(followerCount); //팔로워 수
+        userProfileDto.setFollowing(false);
 
         // 습관들과 인증 정보를 조회하여 UserProfileHabitDto와 CertifyDto에 담고, UserProfileDto에 추가
         List<UserProfileHabitDto> habitList = new ArrayList<>();
@@ -109,7 +110,14 @@ public class FeedController {
 
     //다른 유저의 프로필 피드보기
     @GetMapping("profile/{userId}")
-    ResponseEntity<UserProfileDto> getUserProfileFeed(@PathVariable Long userId) throws Exception {
+    ResponseEntity<UserProfileDto> getUserProfileFeed(@PathVariable Long userId,
+                                                      @RequestParam("email") String email) throws Exception {
+        UserEntity byEmail = userService.findByEmail(email);
+        List<FollowEntity> followingList = followService.getFollowingList(byEmail.getId());
+
+        // 현재 보고 있는 프로필 페이지의 사용자를 팔로우했는지 여부 확인
+        boolean isFollowing = followingList.stream()
+                .anyMatch(follow -> follow.getToUser().getId().equals(userId));
 
         UserEntity user = userService.getUser(userId);
         ProfileEntity profileByEmail = profileService.getProfile(user);
@@ -126,6 +134,7 @@ public class FeedController {
         log.info("달성률(달성중인 습관의 평균): {}", totalAchievementRate);
         log.info("달성중인 습관갯수 : {}", undeletedAndActiveHabits.size());
         log.info("팔로워 수 : {}", followerCount);
+        log.info("내가 이 유저를 팔로우했는지 여부: {}", isFollowing);
 
         UserProfileDto userProfileDto = new UserProfileDto();
 
@@ -135,6 +144,7 @@ public class FeedController {
         userProfileDto.setTotalAchievementRate(totalAchievementRate); //달성률(달성중인 습관의 평균)
         userProfileDto.setTotalHabitCount(undeletedAndActiveHabits.size()); //달성중인 습관갯수
         userProfileDto.setFollowerCount(followerCount); //팔로워 수
+        userProfileDto.setFollowing(isFollowing);
 
         // 습관들과 인증 정보를 조회하여 UserProfileHabitDto와 CertifyDto에 담고, UserProfileDto에 추가
         List<UserProfileHabitDto> habitList = new ArrayList<>();
