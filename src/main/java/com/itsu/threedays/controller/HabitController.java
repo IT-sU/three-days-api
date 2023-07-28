@@ -54,7 +54,6 @@ public class HabitController {
                 .build();
 
         habitService.saveHabit(habit);
-        log.info("habit entity: {}", habit);
         log.info("{}의 습관: 습관명-{}, 습관기간-{}, 공개여부-{}",
                 byEmail.getNickname(), habit.getTitle(), habit.getDuration(), habit.isVisible());
 
