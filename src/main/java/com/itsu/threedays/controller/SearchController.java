@@ -26,8 +26,8 @@ public class SearchController {
 
 
     @GetMapping("/search")
-    ResponseEntity<List<SearchDto>> searchUserByHabitTitle(@RequestParam("title") String title) {
-        List<HabitEntity> habits = habitService.getContentsByTitle(title);
+    ResponseEntity<List<SearchDto>> searchUserByHabitTitle(@RequestParam("habitTitle") String habitTitle) {
+        List<HabitEntity> habits = habitService.getContentsByTitle(habitTitle);
 
         List<SearchDto> searchDtoList = habits.stream()
                 .map(habit -> {
@@ -36,6 +36,7 @@ public class SearchController {
                     searchDto.setNickname(profile.getNickname());
                     searchDto.setUserId(habit.getUserId().getId());
                     searchDto.setKakaoProfileUrl(habit.getUserId().getProfileImage());
+                    searchDto.setTitle(habit.getTitle());
                     return searchDto;
                 })
                 .collect(Collectors.toList());
